@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Employee, AuthState, RiskLevel } from 'src/types.ts'; 
+import { Employee, AuthState, RiskLevel } from './types';
 
 interface AppContextType {
   employees: Employee[];
