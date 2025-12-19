@@ -3,15 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import { useApp } from '../AppContext';
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');  
   const [password, setPassword] = useState('');
   const { login } = useApp();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login(email);
-    navigate('/predictions');
+    
+    try {
+      await login(username, password);  
+      navigate('/predictions');
+    } catch (error) {
+      console.error('Erreur de connexion:', error);
+      alert('Échec de la connexion. Vérifiez vos identifiants.');
+    }
   };
 
   return (
@@ -25,14 +31,14 @@ const Login: React.FC = () => {
         
         <form onSubmit={handleSubmit} className="bg-white p-10 rounded-2xl shadow-xl border border-darkBrown/5 space-y-6">
           <div className="space-y-2">
-            <label className="text-[10px] font-bold tracking-widest text-darkBrown/60">ADRESSE E-MAIL</label>
+            <label className="text-[10px] font-bold tracking-widest text-darkBrown/60">NOM D'UTILISATEUR</label>
             <input 
               required
-              type="email" 
+              type="text" 
               className="w-full bg-cream/50 border border-darkBrown/10 px-4 py-3 rounded-lg focus:ring-1 focus:ring-sage focus:border-sage outline-none transition-all font-sans"
-              placeholder="bonjour@zororh.ai"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              placeholder="Nom d'utilisateur"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
             />
           </div>
           
