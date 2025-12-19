@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useApp } from '../AppContext';
 import { Employee } from '../types';
-import { ShieldAlert, ChevronRight, FileText, Download } from 'lucide-react';
+import { ShieldAlert, FileText, Download } from 'lucide-react';
 
 const RetentionPlans: React.FC = () => {
   const { employees } = useApp();
-  const atRiskEmployees = employees.filter((e: Employee) => e.riskScore >= 60);
-  const [selectedId, setSelectedId] = useState<string | null>(atRiskEmployees[0]?.id || null);
+  const atRiskEmployees = employees.filter((e: Employee) => (e.riskScore || e.probability) >= 60);
+  const [selectedId, setSelectedId] = useState<number | null>(atRiskEmployees[0]?.id || null);
 
   const selectedEmployee = employees.find((e: Employee) => e.id === selectedId);
 
@@ -36,13 +36,13 @@ const RetentionPlans: React.FC = () => {
                 }`}
               >
                 <div className={`text-[10px] font-bold tracking-widest mb-2 ${selectedId === emp.id ? 'text-cream/50' : 'text-darkBrown/40'}`}>
-                  {emp.riskScore}% RISQUE
+                  {emp.riskScore || emp.probability}% RISQUE
                 </div>
                 <div className={`font-serif text-2xl ${selectedId === emp.id ? 'text-cream' : 'text-darkBrown'}`}>
                   {emp.name}
                 </div>
                 <div className={`text-[10px] font-bold tracking-widest mt-1 ${selectedId === emp.id ? 'text-cream/70' : 'text-darkBrown/60'}`}>
-                  {emp.title}
+                  {emp.title || 'Employé'}
                 </div>
               </button>
             ))
@@ -60,7 +60,9 @@ const RetentionPlans: React.FC = () => {
               <div className="bg-sage p-10 flex justify-between items-center text-cream">
                 <div>
                    <h2 className="font-serif text-4xl mb-1">{selectedEmployee.name}</h2>
-                   <p className="text-xs font-bold tracking-widest opacity-80 uppercase">{selectedEmployee.department} • EMBAUCHE {selectedEmployee.hireYear}</p>
+                   <p className="text-xs font-bold tracking-widest opacity-80 uppercase">
+                     {selectedEmployee.department || 'N/A'} • EMBAUCHE {selectedEmployee.hireYear || 'N/A'}
+                   </p>
                 </div>
                 <button className="bg-cream/20 p-4 rounded-full hover:bg-cream/30 transition-all">
                   <Download size={20} />
@@ -68,34 +70,25 @@ const RetentionPlans: React.FC = () => {
               </div>
               
               <div className="p-10">
-                <div className="prose max-w-none text-darkBrown/80 font-light leading-relaxed">
-                  {selectedEmployee.retentionPlan ? (
-                    <div className="space-y-8">
-                       {selectedEmployee.retentionPlan.split('\n\n').map((para: string, i: number) => {
-                         if (para.startsWith('###')) {
-                           return <h3 key={i} className="font-serif text-2xl italic text-darkBrown mt-8 border-b border-darkBrown/10 pb-2">{para.replace('### ', '')}</h3>
-                         }
-                         if (para.startsWith('-')) {
-                           return (
-                             <ul key={i} className="space-y-2">
-                               {para.split('\n').map((item: string, j: number) => (
-                                 <li key={j} className="flex gap-4 items-start">
-                                   <ChevronRight size={14} className="mt-1 text-sage flex-shrink-0" />
-                                   <span>{item.replace('- ', '')}</span>
-                                 </li>
-                               ))}
-                             </ul>
-                           )
-                         }
-                         return <p key={i}>{para}</p>
-                       })}
+                <div className="text-center space-y-6">
+                  <div>
+                    <div className="text-6xl font-bold text-darkBrown mb-2">
+                      {selectedEmployee.riskScore || selectedEmployee.probability}%
                     </div>
-                  ) : (
-                    <div className="text-center py-20">
-                      <FileText size={48} className="mx-auto text-darkBrown/10 mb-4" />
-                      <p className="italic">Données du plan manquantes pour cet employé.</p>
-                    </div>
-                  )}
+                    <p className="text-sm text-darkBrown/60">Probabilité de départ</p>
+                  </div>
+                  
+                  <div className="mt-8 p-6 bg-sage/10 rounded-xl">
+                    <h3 className="font-serif text-2xl text-darkBrown mb-4">Prédiction</h3>
+                    <p className="text-lg font-bold text-darkBrown">{selectedEmployee.prediction}</p>
+                  </div>
+
+                  <div className="text-center py-10 text-darkBrown/40">
+                    <FileText size={48} className="mx-auto mb-4 opacity-20" />
+                    <p className="font-serif italic">
+                      Plan de rétention détaillé à venir
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

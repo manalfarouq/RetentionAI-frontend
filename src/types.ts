@@ -6,23 +6,27 @@ export enum RiskLevel {
 }
 
 export interface Employee {
-  id: string;
+  id: number;
   name: string;
-  department: string;
-  title: string;
-  hireYear: number;
-  tenureYears: number;
-  performanceRating: number;
-  compensation: number;
-  riskScore: number;
-  riskLevel: RiskLevel;
-  retentionPlan?: string;
+  prediction: string;  // "Va quitter" ou "Va rester"
+  probability: number; // 0-100
+  user_id?: number;
+  
+  // Champs optionnels pour compatibilité avec l'ancien design
+  department?: string;
+  title?: string;
+  hireYear?: number;
+  riskLevel?: RiskLevel;
+  riskScore?: number;
+
+  retentionStrategy?: string;
 }
 
 export interface AuthState {
   isAuthenticated: boolean;
   user: {
-    name: string;
-    email: string;
+    id: number;
+    username: string;
   } | null;
+  token: string | null;
 }
