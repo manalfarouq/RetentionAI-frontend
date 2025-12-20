@@ -42,6 +42,32 @@ export const getEmployees = async (token: string) => {
   return data.users || data || [];
 };
 
+export const predictAttrition = async (token: string, employeeData: any) => {
+  const res = await fetch(`${API_URL}/predict`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "accept": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(employeeData)
+  });
+
+  if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('username');
+      throw new Error('SESSION_EXPIRED');
+    }
+    
+    const error = await res.json().catch(() => ({ detail: 'Erreur serveur' }));
+    throw new Error(error.detail || 'Erreur lors de la prédiction');
+  }
+
+  return res.json();
+};
+
 export const generateRetentionPlan = async (token: string, planData: any) => {
   const res = await fetch(`${API_URL}/generate-retention-plan`, {
     method: "POST",
@@ -58,4 +84,4 @@ export const generateRetentionPlan = async (token: string, planData: any) => {
   }
 
   return res.json();
-};  
+};
