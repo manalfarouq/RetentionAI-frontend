@@ -20,12 +20,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const logout = () => {
+    // Nettoyer le localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('username');
+    
     setAuthState({ isAuthenticated: false, user: null, token: null });
     setEmployees([]);
   };
 
   const login = async (username: string, password: string) => {
     const data = await loginApi(username, password);
+    
+    // CORRECTION : Stocker le token dans localStorage
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user_id', data.user_id.toString());
+    localStorage.setItem('username', data.username);
+    
     setAuthState({
       isAuthenticated: true,
       user: { id: data.user_id, username: data.username },
