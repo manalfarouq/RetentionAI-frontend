@@ -167,7 +167,7 @@ const Predictions: React.FC = () => {
       OverTime_Yes: hasOverTime ? parseInt(formData.OverTime_Yes) : 0
     };
 
-    console.log('📤 Données envoyées:', apiData);
+    console.log('Données envoyées:', apiData);
 
     const API_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8001';
     const response = await fetch(`${API_URL}/predict?token=${encodeURIComponent(token)}`, {
@@ -182,7 +182,7 @@ const Predictions: React.FC = () => {
     }
 
     const data = await response.json();
-    console.log('📊 Réponse reçue:', data);
+    console.log('Réponse reçue:', data);
 
     const probability = data.probability > 1 ? data.probability : data.probability * 100;
 
@@ -196,7 +196,7 @@ const Predictions: React.FC = () => {
 
     await loadHistory();
   } catch (error: any) {
-    console.error('❌ Erreur:', error);
+    console.error('Erreur:', error);
     alert(error.message || 'Une erreur est survenue lors de la prédiction');
   } finally {
     setLoading(false);
