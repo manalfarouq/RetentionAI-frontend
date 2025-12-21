@@ -516,7 +516,7 @@ const Predictions: React.FC = () => {
                   <div>
                     <p className="text-sm text-stone-600 mb-1">Prédiction</p>
                     <p className="text-lg font-medium text-stone-800">
-                      {result.attrition === 1 ? '🚪 Va quitter' : '✓ Va rester'}
+                      {result.attrition === 1 ? 'Va quitter' : '✓ Va rester'}
                     </p>
                   </div>
 
